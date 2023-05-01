@@ -47,3 +47,36 @@ All x86 processors begin in a simplistic 16-bit mode called real mode, the GRUB 
 * Provides access to the interrupt vector table (IVT) which contains the addresses of the interrupt handlers used bu the BIOS.
 * Provides support for real-time clock, keyboard and mouse inputs
 
+Note that GRUB detects linux boot protocol and loads linux kernel in real mode, Linux kernel itself makes the switch to protected mode.
+
+
+
+## Prerequisies 
+* x86 PC
+* Linux
+* NASM assembler
+* gcc
+* ld (GNU Linker)
+* grub
+
+original author's source code ("https://github.com/arjun024/mkernel") , Thank you!
+
+
+
+
+## Entry point using assembly
+
+We cannot avoid a little bit of assembly, the assemply will invoke an external function in C then halt the program flow.
+
+### How we make sure that assembly code will serve as the starting point of the kernel?
+We will use a linker script that links the object files to produce the final kernel executable.
+In the linker script, we will explicitly specify that we want our binary to be loaded at the address 0x100000.
+This address is where the kernel is expected to be.
+
+
+```nasm
+;;kernel.asm
+```
+
+
+
