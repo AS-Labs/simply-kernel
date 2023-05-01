@@ -78,5 +78,96 @@ This address is where the kernel is expected to be.
 ;;kernel.asm
 ```
 
+The first instruction bits 32 is not an x86 assembly instruction, it's a directive to the NASM assembler that specifies it should generate code to run on a processor in 32-bit mode.
+As good practice it is better to be explicit.
+
+The text section is where we have our code.
+
+global is another NASM directive to set symbols from source code as global.
+so the linker knows where the symbol start is; which happens to be our entry point.
+
+kmain is our function that will be defined in our kernel.c file. extern declares that the function is declared elsewhere.
+
+
+Then, we have the start function that which calls the kmain function and halts, interrupts can awake the CPU from an hlt instruction.
+so we have disabled interrupts beforehand using cli instruction, which is short for clear-interrupts.
+
+Ideally we should set aside some memory for the stack and point the stack pointer esp to it.
+#### ESP register
+* The ESP register stores the memory address of the current top of the stack, and automatically updated by the CPU when data is pushed onto or popped off the stack.
+* Used for temporary storage of data during program execution, The stack is a last-in-first-out data structure.
+
+
+```c
+// LIFO data structure example in C
+#include <stdio.h>
+#include <stdlib.h>
+
+// define a struct for the linked list node
+typedef struct Node {
+        int data;
+        struct Node* next;
+} Node;
+
+// define a struct for the LIFO stack
+typedef struct Stack {
+    Node* top;
+} Stack;
+
+// initialize an empty stack
+void init(Stack* s) {
+    s->top = NULL;
+}
+
+// check if the stack is empty
+int isEmpty(Stack* s) {
+    return s->top == NULL;
+}
+
+// push an element onto the stack
+void push(Stack* s, int data) {
+    // allocate a new node
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    if (newNode == NULL) {
+            fprintf(stderr, "Error: memory allocation failed\n");
+            exit(EXIT_FAILURE);
+        }
+        // set the node data and next pointer
+        newNode->data = data;
+        newNode->next = s->top;
+        // set the new node as the top of the stack
+        s->top = newNode;
+}
+
+// pop an element off the stack
+int pop(Stack* s) {
+    if (isEmpty(s)) {
+            fprintf(stderr, "Error: stack is empty\n");
+            exit(EXIT_FAILURE);
+        }
+        // save the top node and data
+        Node* topNode = s->top;
+        int data = topNode->data;
+        // set the next node as the new top of the stack
+        s->top = topNode->next;
+        // free the top node
+        free(topNode);
+        // return the popped data
+        return data;
+}
+
+
+// print the stack contents
+void printStack(Stack* s) {
+    printf("Stack: ");
+    Node* node = s->top;
+    while (node != NULL) {
+            printf("%d ", node->data);
+            node = node->next;
+        }
+        printf("\n");
+
+}
+```
 
 
