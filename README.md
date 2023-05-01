@@ -93,11 +93,30 @@ Then, we have the start function that which calls the kmain function and halts, 
 so we have disabled interrupts beforehand using cli instruction, which is short for clear-interrupts.
 
 Ideally we should set aside some memory for the stack and point the stack pointer esp to it.
+We use the resb instruction, which reserves memory given in bytes, after which a label is left which will point to the edge of the reserved piece of memory.
+Just before the kmain is called, the stack pointer (esp) is made to point to this space using the mov instruction.
+
+
 #### ESP register
 * The ESP register stores the memory address of the current top of the stack, and automatically updated by the CPU when data is pushed onto or popped off the stack.
 * Used for temporary storage of data during program execution, The stack is a last-in-first-out data structure.
+* Sees GRUB does this for us, and the stack pointer is already set at this point
+
+Just to be sure, we allocate some space in the BSS section and point the stack pointer to the beginning of the allocated memory.
+#### BSS section
+* Block Started by Symbol
+* Section of memory in an executable that contains uninitialized data.
+* Used typically to store global and static variables that are initialized to zero or null.
+* When the OS allocates memory for the BSS section it sets all the bytes to zero
 
 
+
+
+
+
+
+
+##### LIFO data structure example (ESP register)
 ```c
 // LIFO data structure example in C
 #include <stdio.h>
@@ -170,4 +189,19 @@ void printStack(Stack* s) {
 }
 ```
 
+
+### The kernel in C
+In kernel.asm, we called the function kmain(), so the C code will start executing at kmain()
+
+```c
+// kernel.c
+```
+All the kernel will do is clear the screen and write the string we specified.
+
+First, we made a pointer vidptr to point to the address 0xb8000.
+This address is the start of video memory in protected mode, The screen's text memory is simply a chunk of memory in our address space.
+The memory mapped input/output for the screen starts at 0xb8000 and supports 25 lines, each line contain 80 ascii characters.
+
+Each character element in this text memory is represented by 16 bits (2 bytes), the first byte should have the representation of the character as in ASCII.
+The second byte is the attribute-byte; this describes the formatting of the character including attributes such as color.
 
