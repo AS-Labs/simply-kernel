@@ -205,3 +205,25 @@ The memory mapped input/output for the screen starts at 0xb8000 and supports 25 
 Each character element in this text memory is represented by 16 bits (2 bytes), the first byte should have the representation of the character as in ASCII.
 The second byte is the attribute-byte; this describes the formatting of the character including attributes such as color.
 
+Printing a character 's' in green color on a black background, we will store the character 's' in the ifrst byte of the video memory address and the value 0x02 in the second byte.
+Where 0 represents black background and 2 represents green foreground.
+
+In our kernel, wel will use light grey character on a black background. value = 0x07
+
+In the first while loop, the program writes the blank character with 0x07 attribute all over the 80 columns of the 25 lines. clearing the screen.
+In the second while loop, characters of the null terminated string "my first kernel, thank you arjunsreedharan" are written to the chunk of video memory with each character holding the attribute-byte of 0x07.
+
+#### The linking part
+We will assemble ```kernel.asm``` with NASM to an object file; then using GCC we will compile ```kernel.c``` to another object file.
+Now we need to get those objects linked to an executable bootable kernel.
+
+Using a explicit linker script, it can be passed as an agrument to ```ld```
+
+```ld
+ link.ld
+```
+First we set the output format of our output executable to be 32-bit ELF [Executable and Linkable Format].
+ELF is the standard binary file format for the Unix-like systems on x86 arch.
+
+ENTRY takes on argument, it specifies the symbol name that should be the entry point of our executable.
+SECTIONS is the most important part, defining the layout of our executable. We could specify how the different sections are to be merged and at what location each of these is to be placed.
