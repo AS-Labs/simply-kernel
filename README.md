@@ -227,3 +227,9 @@ ELF is the standard binary file format for the Unix-like systems on x86 arch.
 
 ENTRY takes on argument, it specifies the symbol name that should be the entry point of our executable.
 SECTIONS is the most important part, defining the layout of our executable. We could specify how the different sections are to be merged and at what location each of these is to be placed.
+
+Within the braces that follow the SECTIONS statement, the period character (.) represents the location counter.
+The location counter is always initialized at 0x0 at the beginning of the SECTIONS block.
+
+Remember, earlier I told you that kernel's code should start at the address 0x1000000.
+
